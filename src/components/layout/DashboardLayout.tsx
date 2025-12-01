@@ -104,14 +104,26 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
               <Home className="h-4 w-4 mr-2" />
               Dashboard
             </Button>
-            <Button
-              variant="ghost"
-              className="rounded-none border-b-2 border-transparent hover:border-primary"
-              onClick={() => navigate("/events")}
-            >
-              <Calendar className="h-4 w-4 mr-2" />
-              Events
-            </Button>
+            {(userRole === "admin" || userRole === "organizer") && (
+              <Button
+                variant="ghost"
+                className="rounded-none border-b-2 border-transparent hover:border-primary"
+                onClick={() => navigate("/events")}
+              >
+                <Calendar className="h-4 w-4 mr-2" />
+                Events
+              </Button>
+            )}
+            {userRole === "organizer" && (
+              <Button
+                variant="ghost"
+                className="rounded-none border-b-2 border-transparent hover:border-primary"
+                onClick={() => navigate("/new-event")}
+              >
+                <Calendar className="h-4 w-4 mr-2" />
+                Create Event
+              </Button>
+            )}
             <Button
               variant="ghost"
               className="rounded-none border-b-2 border-transparent hover:border-primary"
