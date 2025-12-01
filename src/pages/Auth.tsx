@@ -7,11 +7,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
+  const [role, setRole] = useState<"student" | "organizer">("student");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -73,6 +75,7 @@ const Auth = () => {
           emailRedirectTo: `${window.location.origin}/dashboard`,
           data: {
             full_name: fullName,
+            role: role,
           },
         },
       });
@@ -167,6 +170,18 @@ const Auth = () => {
                 required
                 minLength={6}
               />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="signup-role">Role</Label>
+              <Select value={role} onValueChange={(value: "student" | "organizer") => setRole(value)}>
+                <SelectTrigger id="signup-role">
+                  <SelectValue placeholder="Select your role" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="student">Student</SelectItem>
+                  <SelectItem value="organizer">Organizer</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? "Creating account..." : "Sign Up"}
