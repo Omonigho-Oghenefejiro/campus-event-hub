@@ -107,6 +107,38 @@ export type Database = {
           },
         ]
       }
+      event_registrations: {
+        Row: {
+          created_at: string
+          event_id: string
+          id: string
+          student_email: string
+          student_name: string
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          id?: string
+          student_email: string
+          student_name: string
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          id?: string
+          student_email?: string
+          student_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_registrations_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       events: {
         Row: {
           created_at: string
