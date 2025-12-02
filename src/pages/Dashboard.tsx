@@ -90,7 +90,7 @@ const Dashboard = () => {
               Welcome back! Here's what's happening with your events.
             </p>
           </div>
-          <Button onClick={() => navigate("/events/new")} size="lg">
+          <Button onClick={() => navigate("/new-event")} size="lg">
             <Plus className="h-5 w-5 mr-2" />
             Create Event
           </Button>

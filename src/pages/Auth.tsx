@@ -18,18 +18,40 @@ const Auth = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  const redirectBasedOnRole = async (session: any) => {
+    if (!session) return;
+
+    // Fetch user role
+    const { data: roles } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", session.user.id)
+      .single();
+
+    const userRole = roles?.role;
+
+    // Redirect based on role
+    if (userRole === "student") {
+      navigate("/events");
+    } else if (userRole === "organizer" || userRole === "admin") {
+      navigate("/dashboard");
+    } else {
+      navigate("/dashboard");
+    }
+  };
+
   useEffect(() => {
     // Check if user is already logged in
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
-        navigate("/dashboard");
+        redirectBasedOnRole(session);
       }
     });
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (session) {
-        navigate("/dashboard");
+        redirectBasedOnRole(session);
       }
     });
 
@@ -99,6 +121,12 @@ const Auth = () => {
 
   return (
     <AuthLayout title="Welcome" subtitle="Sign in to manage campus events">
+      <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+        <p className="text-sm text-blue-900">
+          <strong>Admin Login:</strong> Email: <code className="bg-blue-100 px-2 py-1 rounded">admin</code> | Password: <code className="bg-blue-100 px-2 py-1 rounded">admin123</code>
+        </p>
+      </div>
+
       <Tabs defaultValue="signin" className="w-full">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="signin">Sign In</TabsTrigger>
