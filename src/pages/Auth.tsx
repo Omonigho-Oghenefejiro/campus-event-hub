@@ -121,12 +121,6 @@ const Auth = () => {
 
   return (
     <AuthLayout title="Welcome" subtitle="Sign in to manage campus events">
-      <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-        <p className="text-sm text-blue-900">
-          <strong>Admin Login:</strong> Email: <code className="bg-blue-100 px-2 py-1 rounded">admin</code> | Password: <code className="bg-blue-100 px-2 py-1 rounded">admin123</code>
-        </p>
-      </div>
-
       <Tabs defaultValue="signin" className="w-full">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="signin">Sign In</TabsTrigger>
@@ -134,6 +128,12 @@ const Auth = () => {
         </TabsList>
         
         <TabsContent value="signin">
+          <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <p className="text-sm text-blue-900">
+              <strong>Admin Login:</strong> Email: <code className="bg-blue-100 px-2 py-1 rounded">admin1@gmail.com</code> | Password: <code className="bg-blue-100 px-2 py-1 rounded">admin123</code>
+            </p>
+          </div>
+          
           <form onSubmit={handleSignIn} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="signin-email">Email</Label>
