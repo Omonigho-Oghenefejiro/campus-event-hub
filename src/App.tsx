@@ -7,6 +7,7 @@ import Landing from "./pages/Landing";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import Events from "./pages/Events";
+import EventDetails from "./pages/EventDetails";
 import Resources from "./pages/Resources";
 import NewEvent from "./pages/NewEvent";
 import Approvals from "./pages/Approvals";
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/auth" element={<Auth />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/events" element={<Events />} />
+          <Route path="/events/:id" element={<EventDetails />} />
           <Route path="/resources" element={<Resources />} />
           <Route path="/new-event" element={<NewEvent />} />
           <Route path="/approvals" element={<Approvals />} />

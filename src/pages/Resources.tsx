@@ -72,14 +72,14 @@ const Resources = () => {
     try {
       const { error } = await supabase
         .from("resources")
-        .insert({
+        .insert([{
           name: newResource.name,
-          type: newResource.type,
-          location: newResource.location,
+          type: newResource.type as "room" | "av_equipment" | "furniture" | "other",
+          location: newResource.location || null,
           capacity: newResource.capacity ? parseInt(newResource.capacity) : null,
-          description: newResource.description,
+          description: newResource.description || null,
           available: true,
-        });
+        }]);
 
       if (error) throw error;
 
