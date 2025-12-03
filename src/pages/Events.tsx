@@ -212,10 +212,12 @@ const Events = () => {
                 : "View and manage your events"}
             </p>
           </div>
-          <Button onClick={() => navigate("/new-event")} size="lg">
-            <Plus className="h-5 w-5 mr-2" />
-            Create Event
-          </Button>
+          {userRole === "organizer" && (
+            <Button onClick={() => navigate("/new-event")} size="lg">
+              <Plus className="h-5 w-5 mr-2" />
+              Create Event
+            </Button>
+          )}
         </div>
 
         {/* Filters */}
@@ -261,10 +263,12 @@ const Events = () => {
                   ? "Try adjusting your filters"
                   : "Create your first event to get started"}
               </p>
-              <Button onClick={() => navigate("/new-event")}>
-                <Plus className="h-4 w-4 mr-2" />
-                Create Event
-              </Button>
+              {userRole === "organizer" && (
+                <Button onClick={() => navigate("/new-event")}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Create Event
+                </Button>
+              )}
             </CardContent>
           </Card>
         ) : (

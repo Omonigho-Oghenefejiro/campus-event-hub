@@ -3,15 +3,30 @@ import { supabase } from "@/integrations/supabase/client";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Package, Search, MapPin, Users } from "lucide-react";
+import { Package, Search, MapPin, Users, Plus, Trash2, AlertTriangle } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { useUserRole } from "@/hooks/use-user-role";
+import { useToast } from "@/hooks/use-toast";
 
 const Resources = () => {
+  const { role } = useUserRole();
+  const { toast } = useToast();
   const [resources, setResources] = useState<any[]>([]);
   const [filteredResources, setFilteredResources] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, setTypeFilter] = useState<string>("all");
+  const [loading, setLoading] = useState(false);
+  const [newResource, setNewResource] = useState({
+    name: "",
+    type: "room",
+    location: "",
+    capacity: "",
+    description: "",
+  });
 
   useEffect(() => {
     fetchResources();
@@ -50,6 +65,99 @@ const Resources = () => {
     setFilteredResources(filtered);
   };
 
+  const handleAddResource = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const { error } = await supabase
+        .from("resources")
+        .insert({
+          name: newResource.name,
+          type: newResource.type,
+          location: newResource.location,
+          capacity: newResource.capacity ? parseInt(newResource.capacity) : null,
+          description: newResource.description,
+          available: true,
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Resource added successfully",
+      });
+
+      setNewResource({
+        name: "",
+        type: "room",
+        location: "",
+        capacity: "",
+        description: "",
+      });
+
+      fetchResources();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteResource = async (resourceId: string) => {
+    if (!confirm("Are you sure you want to delete this resource?")) return;
+
+    try {
+      const { error } = await supabase
+        .from("resources")
+        .delete()
+        .eq("id", resourceId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Resource deleted successfully",
+      });
+
+      fetchResources();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleMarkAsUnavailable = async (resourceId: string, available: boolean) => {
+    try {
+      const { error } = await supabase
+        .from("resources")
+        .update({ available: !available })
+        .eq("id", resourceId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: `Resource marked as ${!available ? "unavailable (faulty)" : "available"}`,
+      });
+
+      fetchResources();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
   const getTypeIcon = (type: string) => {
     switch (type) {
       case "room":
@@ -75,11 +183,90 @@ const Resources = () => {
     <DashboardLayout>
       <div className="space-y-6">
         {/* Header */}
-        <div>
-          <h2 className="text-3xl font-bold">Resources</h2>
-          <p className="text-muted-foreground mt-1">
-            Browse available rooms, equipment, and facilities
-          </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-3xl font-bold">Resources</h2>
+            <p className="text-muted-foreground mt-1">
+              {role === "admin" 
+                ? "Manage campus resources and equipment"
+                : "Browse available rooms, equipment, and facilities"}
+            </p>
+          </div>
+          {role === "admin" && (
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Resource
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-md">
+                <DialogHeader>
+                  <DialogTitle>Add New Resource</DialogTitle>
+                  <DialogDescription>
+                    Add a new room, equipment, or facility to the system
+                  </DialogDescription>
+                </DialogHeader>
+                <form onSubmit={handleAddResource} className="space-y-4">
+                  <div>
+                    <Label htmlFor="name">Resource Name *</Label>
+                    <Input
+                      id="name"
+                      placeholder="e.g., Main Auditorium"
+                      value={newResource.name}
+                      onChange={(e) => setNewResource({ ...newResource, name: e.target.value })}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="type">Type *</Label>
+                    <Select value={newResource.type} onValueChange={(val) => setNewResource({ ...newResource, type: val })}>
+                      <SelectTrigger id="type">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="room">Room</SelectItem>
+                        <SelectItem value="av_equipment">A/V Equipment</SelectItem>
+                        <SelectItem value="furniture">Furniture</SelectItem>
+                        <SelectItem value="other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label htmlFor="location">Location</Label>
+                    <Input
+                      id="location"
+                      placeholder="e.g., Building A, Floor 3"
+                      value={newResource.location}
+                      onChange={(e) => setNewResource({ ...newResource, location: e.target.value })}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="capacity">Capacity</Label>
+                    <Input
+                      id="capacity"
+                      type="number"
+                      placeholder="e.g., 100"
+                      value={newResource.capacity}
+                      onChange={(e) => setNewResource({ ...newResource, capacity: e.target.value })}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="description">Description</Label>
+                    <Input
+                      id="description"
+                      placeholder="Additional details..."
+                      value={newResource.description}
+                      onChange={(e) => setNewResource({ ...newResource, description: e.target.value })}
+                    />
+                  </div>
+                  <Button type="submit" className="w-full" disabled={loading}>
+                    {loading ? "Adding..." : "Add Resource"}
+                  </Button>
+                </form>
+              </DialogContent>
+            </Dialog>
+          )}
         </div>
 
         {/* Filters */}
@@ -145,11 +332,11 @@ const Resources = () => {
                     {resource.available ? (
                       <Badge className="bg-success">Available</Badge>
                     ) : (
-                      <Badge variant="destructive">Unavailable</Badge>
+                      <Badge variant="destructive">Faulty</Badge>
                     )}
                   </div>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="space-y-4">
                   <div className="space-y-2 text-sm">
                     {resource.location && (
                       <div className="flex items-center text-muted-foreground">
@@ -169,6 +356,26 @@ const Resources = () => {
                       </p>
                     )}
                   </div>
+
+                  {role === "admin" && (
+                    <div className="flex gap-2 pt-2 border-t border-border">
+                      <Button
+                        size="sm"
+                        variant={resource.available ? "outline" : "default"}
+                        onClick={() => handleMarkAsUnavailable(resource.id, resource.available)}
+                      >
+                        <AlertTriangle className="h-4 w-4 mr-1" />
+                        {resource.available ? "Mark Faulty" : "Mark Available"}
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={() => handleDeleteResource(resource.id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             ))}

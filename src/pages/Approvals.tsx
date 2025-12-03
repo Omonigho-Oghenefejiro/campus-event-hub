@@ -46,12 +46,12 @@ const Approvals = () => {
       .from("events")
       .select(`
         *,
-        organizer:profiles!events_organizer_id_fkey(full_name, email),
+        profiles(full_name, email),
         bookings(
-          resource:resources(name, type)
+          resources(name, type)
         )
       `)
-      .eq("status", "pending")
+      .eq("status", "pending_approval")
       .order("created_at", { ascending: false });
 
     if (error) {
@@ -64,7 +64,17 @@ const Approvals = () => {
       return;
     }
 
-    setEvents(data as any || []);
+    // Transform the data to match our interface
+    const transformedData = data?.map((event: any) => ({
+      ...event,
+      organizer: event.profiles || { full_name: "Unknown", email: "unknown@example.com" },
+      bookings: (event.bookings || []).map((booking: any) => ({
+        ...booking,
+        resource: booking.resources || { name: "Unknown", type: "Unknown" }
+      }))
+    })) || [];
+
+    setEvents(transformedData);
     setLoading(false);
   };
 

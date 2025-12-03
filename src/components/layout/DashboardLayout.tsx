@@ -108,16 +108,28 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
               </Button>
             )}
             {role === "organizer" && (
+              <>
+                <Button
+                  variant="ghost"
+                  className="rounded-none border-b-2 border-transparent hover:border-primary"
+                  onClick={() => navigate("/new-event")}
+                >
+                  <Calendar className="h-4 w-4 mr-2" />
+                  Create Event
+                </Button>
+              </>
+            )}
+            {role !== "student" && role !== "admin" && (
               <Button
                 variant="ghost"
                 className="rounded-none border-b-2 border-transparent hover:border-primary"
-                onClick={() => navigate("/new-event")}
+                onClick={() => navigate("/resources")}
               >
-                <Calendar className="h-4 w-4 mr-2" />
-                Create Event
+                <Package className="h-4 w-4 mr-2" />
+                Resources
               </Button>
             )}
-            {role !== "student" && (
+            {role === "admin" && (
               <Button
                 variant="ghost"
                 className="rounded-none border-b-2 border-transparent hover:border-primary"
