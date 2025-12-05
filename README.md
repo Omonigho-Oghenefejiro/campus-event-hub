@@ -1,73 +1,97 @@
-# Welcome to your Lovable project
+# CampusConnect Pro – Event Management System
 
-## Project info
+A centralized, web-based platform designed to streamline event management within a university setting.
 
-**URL**: https://lovable.dev/projects/d9a29deb-85b7-434c-9ac0-af1e71c2bc6a
+## Project Info
 
-## How can I edit this code?
+**Live URL**: https://campus-event-hub-weld.vercel.app  
+**Lovable Project**: https://lovable.dev/projects/d9a29deb-85b7-434c-9ac0-af1e71c2bc6a
 
-There are several ways of editing your application.
+## Tech Stack
 
-**Use Lovable**
+### Frontend
+- **React 18** - UI library
+- **TypeScript** - Type-safe JavaScript
+- **Vite** - Build tool and dev server
+- **Tailwind CSS** - Utility-first CSS framework
+- **shadcn/ui** - Component library
+- **React Router** - Client-side routing
+- **TanStack Query** - Server state management
+- **Lucide React** - Icons
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/d9a29deb-85b7-434c-9ac0-af1e71c2bc6a) and start prompting.
+### Backend (Lovable Cloud / Supabase)
+- **Supabase** - Backend-as-a-Service
+- **PostgreSQL** - Database (hosted on Supabase)
+- **Supabase Auth** - Email/password authentication
+- **Row Level Security (RLS)** - Database security policies
 
-Changes made via Lovable will be committed automatically to this repo.
+### Deployment
+- **Frontend**: Vercel
+- **Backend/Database**: Lovable Cloud (Supabase)
 
-**Use your preferred IDE**
+## Features
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### User Roles
+- **Admin** - Full system access, approve/reject events, manage resources
+- **Organizer** - Create events, book resources, view registrations
+- **Student** - View approved events, register for events
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Core Functionality
+- Event submission with validation
+- Multi-step approval workflow
+- Resource booking (rooms, A/V equipment)
+- Real-time availability checking
+- Event registration system
+- Role-based access control
 
-Follow these steps:
+## Environment Variables
+
+For Vercel deployment, set these environment variables:
+
+```
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_PUBLISHABLE_KEY=your_supabase_anon_key
+```
+
+## Local Development
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
+# Clone the repository
 git clone <YOUR_GIT_URL>
 
-# Step 2: Navigate to the project directory.
+# Navigate to project directory
 cd <YOUR_PROJECT_NAME>
 
-# Step 3: Install the necessary dependencies.
-npm i
+# Install dependencies
+npm install
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Start development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+## Authentication
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+The system uses Supabase Auth with email/password authentication. Email auto-confirm is enabled for streamlined testing.
 
-**Use GitHub Codespaces**
+### Test Credentials
+- **Admin**: admin1@gmail.com / admin123
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Database Schema
 
-## What technologies are used for this project?
+Key tables:
+- `profiles` - User profile information
+- `user_roles` - Role assignments (admin, organizer, student)
+- `events` - Event details and status
+- `resources` - Rooms and equipment
+- `bookings` - Resource reservations
+- `event_registrations` - Student event registrations
+- `approvals` - Event approval workflow
 
-This project is built with:
+## Group C-13 Members
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/d9a29deb-85b7-434c-9ac0-af1e71c2bc6a) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+1. OLUWATUNMIBI FAVOUR OYINDAMOLA - 22/0215
+2. OZOH COLLINS EBELE - 22/2735
+3. OLUWATUKESI DANIEL OLUWADARASIMI - 22/0220
+4. OLUKOYA TOLUWANI WISDOM - 22/0077
+5. OMONIGHO-OKORO OGHENEFEJIRO - 22/0261
+6. OLUWATADE ARAOLUWA DAVID - 22/0136
